@@ -55,7 +55,7 @@
 <style>
     .container {
         margin-bottom: 10px;
-        border: 2px solid navy;
+        border: 3px solid navy;
         border-radius: 5px;
         padding: 10px;
         background-color: #4ebeef

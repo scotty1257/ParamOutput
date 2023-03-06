@@ -13,18 +13,24 @@
     let size = 'xl';
     let N_Param = 0;
     let exportXMLstring = "";
-    let Params = [
-        { 
-            name: "", 
-            type: "", 
-            default_value: "",
+    let Params: any = [
+    ];
+
+
+    
+    function AddParamToListAuto(_name: string, _type: string, _default_value: string) {
+        ++N_Param;
+        Params = Params.concat({ 
+            name: _name === undefined ? "" : _name, 
+            type: _type === undefined ? "" : _type, 
+            default_value: _default_value === undefined ? "" : _default_value,
             empty: true, 
             number: N_Param, 
             checked: false
-        },
-    ];
+        });
+        console.log("Param Added")
+    }
 
-    
     function AddParamToList() {
         ++N_Param;
         Params = Params.concat({ 
@@ -67,6 +73,17 @@
 
     }
 
+    function readXMLParametersIntoComponent(items: any) : void {
+        let params = items;
+
+        for (let i = 0; i < items.length; i++) {
+            let name = items[i].attributes.Name !== undefined ? items[i].attributes.Name.nodeValue : "";
+            let type = items[i].attributes.Type !== undefined ? items[i].attributes.Type.nodeValue : "";
+            let defaultValue = items[i].attributes.DefaultValue !== undefined ? items[i].attributes.DefaultValue.nodeValue : "";
+            AddParamToListAuto(name , type, defaultValue);
+        }
+    }
+
     function importXMLFile() {
 
         let result: any = "";
@@ -82,11 +99,26 @@
 
                 let parser = new DOMParser();
                 let xmlDoc = parser.parseFromString(result,"text/xml");
-                console.log(xmlDoc.documentElement);
+                let items = xmlDoc.getElementsByTagName('Parameter');
+                let errorNode = xmlDoc.querySelector("parsererror");
+
+                if (errorNode) {
+                    console.log("Error reading XML File");
+                } else {
+                    console.log(items);
+                    readXMLParametersIntoComponent(items);
+                }
             }
 
         }
 
+    }
+
+    function RemoveAll() {
+        for (const param of Params) {
+            param.checked = true;
+            RemoveParamFromList();
+        }
     }
     
     $: ParamList = Params;
@@ -102,8 +134,6 @@
         <ModalHeader {toggle}>XML Output</ModalHeader>
         <ModalBody>
             {exportXMLstring}
-            <!-- {exportXMLstring} -->
-            <p id="xmlModalP"></p>
         </ModalBody>
         <ModalFooter>
             <Button color="primary" on:click={copyXML}>Copy XML</Button>
@@ -131,6 +161,7 @@
             <Button class="toolbar-button" on:click={RemoveParamFromList}>Remove Selected</Button>
             <Button class="toolbar-button" on:click={ExportParams}>Export XML</Button>
             <Button class="toolbar-button" on:click={importXMLFile}>Import XML</Button>
+            <Button class="toolbar-button" on:click={RemoveAll}>Remove All</Button>
         </ButtonGroup>
     </Container>
 </div>
