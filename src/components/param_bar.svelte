@@ -7,13 +7,15 @@
     export let ParamDefaultValue = "";
 
     export let checkedParam = false;
+    export let param_number = 0;
 </script>
 
 <!-- Name, Type, Default Value -->
-<div class="container bg-info">
+<div class="container">
     <Container >
         <Form>
             <FormGroup floating>
+                    <p class="number-p"><b>Parameter {param_number} - XML</b></p>
                     <Row style="margin-top: 15px;">
                         <input type=checkbox class="checkbox-radio" bind:checked={checkedParam}>
                         <Col>
@@ -54,10 +56,14 @@
     .container {
         margin-bottom: 10px;
         border: 2px solid navy;
-        border-radius: 20px;;
+        border-radius: 5px;
         padding: 10px;
+        background-color: #4ebeef
     }
-    input[type=radio]{
+    input[type=checkbox]{
         transform:scale(1.5);
+    }
+    .number-p {
+        color: #434343
     }
 </style>

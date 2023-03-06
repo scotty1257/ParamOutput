@@ -3,6 +3,7 @@
     import FileInput from "../components/file_input.svelte";
     import { Label, FormText, Input, Form, FormGroup,  ModalFooter, ModalHeader, ModalBody, Modal, ButtonToolbar, Button, ButtonGroup, Col, Row, Container, Icon } from 'sveltestrap';
 
+    let src = "src/assets/3ds-logo.png";
     let files: any;
     let open = false;
     let fullscreen = true;
@@ -67,7 +68,25 @@
     }
 
     function importXMLFile() {
-        console.log(files[0]);
+
+        let result: any = "";
+        if (files) {
+
+            let XMLFile = files[0];
+
+            let reader = new FileReader();
+            reader.readAsText(XMLFile, 'UTF-8');
+
+            reader.onload = function(event) {
+                result = event.target?.result;
+
+                let parser = new DOMParser();
+                let xmlDoc = parser.parseFromString(result,"text/xml");
+                console.log(xmlDoc.documentElement);
+            }
+
+        }
+
     }
     
     $: ParamList = Params;
@@ -75,6 +94,7 @@
 
 <div class="page-body">
     <div class="header">
+        <img height="50" width="50" alt="3DS Logo" {src}/><br/>
         <h1 class="h1">Parameter and Packet File Import/Export Tool</h1>
     </div>
 
@@ -96,6 +116,7 @@
         <div>
             <!-- <input type=checkbox bind:checked={Param.checked}> -->
             <ParamBar 
+                bind:param_number={Param.number}
                 bind:checkedParam={Param.checked} 
                 bind:ParamName={Param.name} 
                 bind:ParamType={Param.type} 
@@ -116,21 +137,28 @@
 
 
 <style>
+    img {
+        margin-right: 20px;
+        margin-left: 20px;
+    }
     .header {
         margin: auto;
-        align-items: center;
-        width: 58%;
-        border-bottom: 2px solid darkgrey;
+        display: flex;
+        width: 100%;
+        border-bottom: 2px solid #1d6d86;
         margin-bottom: 20px;
         margin-top: 10px;
     }
     .page-body {
-        background-color: lightcyan;
+        background-color: #effaf6;
+        margin-bottom: 30px;
     }
     .h1 {
         @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
         text-align: center;
-        color: navy;
+        align-items: center;
+        -webkit-text-stroke: 1px #3a393f;
+        color: #00a7a2;
         margin-bottom: 20px;
         font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
